@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-import torchdyn
+from torchdyn.models import *
 
 class DeepTINet(nn.Module):
     '''
@@ -29,5 +29,13 @@ class DeepTINet(nn.Module):
         x = self.flatten(x)
         x = self.output_dense(x)
         return x
+
+class GWBOdeNet(nn.Module):
+    def __init__(self, f:nn.Module, sensitivity="adjoint", solver="dopri5"):
+        super().__init__()
+        self.model = NeuralDE(f, sensitivity=sensitivity, solver=solver)
+
+    def forward(self, x):
+        return self.model(x)
 
     
